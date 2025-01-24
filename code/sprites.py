@@ -182,3 +182,20 @@ class Bee(Enemy):
             self.kill()
 
 
+class Worm(Enemy):
+    def __init__(self, frames, rect, groups):
+        super().__init__(frames, rect.topleft, groups)
+        self.rect.bottomleft = rect.bottomleft
+        self.main_rect = rect
+        self.speed = randint(160, 200)
+        self.direction = 1
+
+    def move(self, dt):
+        self.rect.x += self.direction * self.speed * dt
+
+    def constrain(self):
+        if not self.main_rect.contains(self.rect):
+            self.direction *= -1
+            self.frames = [
+                pygame.transform.flip(surf, True, False) for surf in self.frames
+            ]
