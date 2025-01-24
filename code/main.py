@@ -56,6 +56,9 @@ class Game:
         )
         Fire(pos, self.fire_surf, self.all_sprites, self.player)
 
+        self.audio["shoot"].play()
+        self.audio["shoot"].set_volume(0.)
+
     # sprites
     def setup(self):
         map = load_pygame(join("data", "maps", "world.tmx"))
@@ -87,6 +90,11 @@ class Game:
                     pygame.FRect(obj.x, obj.y, obj.width, obj.height),
                     self.all_sprites,
                 )
+
+        self.audio["music"].play(loops=-1)
+        self.audio["music"].set_volume(0.1)
+
+    def collision(self):
 
     def run(self):
         while self.running:
