@@ -28,6 +28,7 @@ class Game:
         self.worm_frames = import_folder("images", "enemies", "worm")
 
         # sounds
+        self.audio = audio_importer("audio")
 
     # sprites
     def setup(self):
