@@ -157,10 +157,19 @@ class Enemy(AnimatedSprite):
     def __init__(self, frames, pos, groups):
         self.frames, self.frame_index, self.animation_speed = frames, 0, 10
         super().__init__(frames, pos, groups)
+        self.death_timer = Timer(200, func=self.kill)
+
+    def destroy(self):
+        self.death_timer.activate()
+        self.animation_speed = 0
+        self.image = pygame.mask.from_surface(self.image).to_surface()
+        self.image.set_colorkey("black")
 
     def update(self, dt):
-        self.move(dt)
-        self.animate(dt)
+        self.death_timer.update()
+        if not self.death_timer:
+            self.move(dt)
+            self.animate(dt)
         self.constrain()
 
 
