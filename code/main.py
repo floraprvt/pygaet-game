@@ -34,9 +34,18 @@ class Game:
         self.audio = audio_importer("audio")
 
     def create_bullet(self, pos, direction):
+        if direction == 1:
+            x = pos[0] + direction * 34
+        else:
+            x = pos[0] + direction * 34 - self.bullet_surf.get_width()
+
         Bullet(
-            pos, self.bullet_surf, direction, (self.all_sprites, self.bullet_sprites)
+            (x, pos[1]),
+            self.bullet_surf,
+            direction,
+            (self.all_sprites, self.bullet_sprites),
         )
+        Fire(pos, self.fire_surf, self.all_sprites, self.player)
 
     # sprites
     def setup(self):
