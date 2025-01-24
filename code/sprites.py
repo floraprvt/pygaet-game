@@ -23,13 +23,16 @@ class Player(Sprite):
         self.direction = pygame.Vector2()
         self.speed = 400
         self.gravity = 50
+        self.on_floor = False
 
     def load_images(self):
         self.frames = []
 
         for folder_path, sub_folders, files_names in walk(join("images", "player")):
             if files_names:
-                for file_name in sorted(files_names, key=lambda name: int(name.split(".")[0])):
+                for file_name in sorted(
+                    files_names, key=lambda name: int(name.split(".")[0])
+                ):
                     full_path = join(folder_path, file_name)
                     surface = pygame.image.load(full_path).convert_alpha()
                     self.frames.append(surface)
@@ -39,6 +42,8 @@ class Player(Sprite):
         self.direction.x = int(keys[pygame.K_RIGHT] or keys[pygame.K_d]) - int(
             keys[pygame.K_LEFT] or keys[pygame.K_q]
         )
+        if keys[pygame.K_SPACE] and self.on_floor:
+            self.direction.y = -20
 
     def move(self, dt):
         # horizontal
@@ -67,6 +72,19 @@ class Player(Sprite):
                     if self.direction.y < 0:
                         self.hitbox_rect.top = sprite.rect.bottom
 
+    def check_floor(self):
+        bottom_rect = pygame.Rect((0, 0), (self.hitbox_rect.width, 2)).move_to(
+            midtop=self.hitbox_rect.midbottom
+        )
+        self.on_floor = (
+            True
+            if bottom_rect.collidelist(
+                [sprite.rect for sprite in self.collision_sprites]
+            )
+            >= 0
+            else False
+        )
+
     def animate(self, dt):
         pass
         # # get state
@@ -85,6 +103,7 @@ class Player(Sprite):
         # ]
 
     def update(self, dt):
+        self.check_floor()
         self.input()
         self.move(dt)
         self.animate(dt)
