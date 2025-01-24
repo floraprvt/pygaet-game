@@ -68,9 +68,9 @@ class Player(Sprite):
                 else:
                     if self.direction.y > 0:
                         self.hitbox_rect.bottom = sprite.rect.top
-                        self.direction.y = 0
                     if self.direction.y < 0:
                         self.hitbox_rect.top = sprite.rect.bottom
+                    self.direction.y = 0
 
     def check_floor(self):
         bottom_rect = pygame.Rect((0, 0), (self.hitbox_rect.width, 2)).move_to(
