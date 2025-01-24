@@ -1,4 +1,5 @@
 from settings import *
+from timing import Timer
 
 
 class Sprite(pygame.sprite.Sprite):
@@ -6,6 +7,19 @@ class Sprite(pygame.sprite.Sprite):
         super().__init__(groups)
         self.image = surf
         self.rect = self.image.get_frect(topleft=pos)
+
+
+class Bullet(Sprite):
+    def __init__(self, pos, surf, direction, groups):
+        super().__init__(pos, surf, groups)
+        self.direction = direction
+        self.speed = 850
+
+    def move(self, dt):
+        self.rect.x += self.direction * self.speed * dt
+
+    def update(self, dt):
+        self.move(dt)
 
 
 class AnimatedSprite(Sprite):
@@ -19,10 +33,11 @@ class AnimatedSprite(Sprite):
 
 
 class Player(AnimatedSprite):
-    def __init__(self, pos, groups, collision_sprites, frames):
+    def __init__(self, pos, groups, collision_sprites, frames, create_bullet):
         super().__init__(frames, pos, groups)
         self.hitbox_rect = self.rect.inflate(-10, 0)
         self.flip = False
+        self.create_bullet = create_bullet
 
         # movement
         self.collision_sprites = collision_sprites
@@ -31,6 +46,9 @@ class Player(AnimatedSprite):
         self.gravity = 50
         self.on_floor = False
 
+        # timer
+        self.shoot_timer = Timer(500)
+
     def input(self):
         keys = pygame.key.get_pressed()
         self.direction.x = int(keys[pygame.K_RIGHT] or keys[pygame.K_d]) - int(
@@ -38,6 +56,10 @@ class Player(AnimatedSprite):
         )
         if keys[pygame.K_SPACE] and self.on_floor:
             self.direction.y = -20
+
+        if keys[pygame.K_RETURN] and not self.shoot_timer:
+            self.create_bullet(self.rect.center, -1 if self.flip else 1)
+            self.shoot_timer.activate()
 
     def move(self, dt):
         # horizontal
@@ -93,6 +115,7 @@ class Player(AnimatedSprite):
         self.image = pygame.transform.flip(self.image, self.flip, False)
 
     def update(self, dt):
+        self.shoot_timer.update()
         self.check_floor()
         self.input()
         self.move(dt)

@@ -2,6 +2,7 @@ from settings import *
 from sprites import *
 from groups import *
 from support import *
+from timing import Timer
 
 
 class Game:
@@ -15,7 +16,9 @@ class Game:
         # groups
         self.all_sprites = AllSprites()
         self.collision_sprites = pygame.sprite.Group()
+        self.bullet_sprites = pygame.sprite.Group()
 
+        # load game
         self.load_assets()
         self.setup()
 
@@ -29,6 +32,11 @@ class Game:
 
         # sounds
         self.audio = audio_importer("audio")
+
+    def create_bullet(self, pos, direction):
+        Bullet(
+            pos, self.bullet_surf, direction, (self.all_sprites, self.bullet_sprites)
+        )
 
     # sprites
     def setup(self):
@@ -51,6 +59,8 @@ class Game:
                     self.all_sprites,
                     self.collision_sprites,
                     self.player_frames,
+                    self.create_bullet,
+                )
                 )
 
     def run(self):
