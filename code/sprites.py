@@ -1,5 +1,7 @@
 from settings import *
 from timing import Timer
+from math import sin
+from random import randint
 
 
 class Sprite(pygame.sprite.Sprite):
@@ -149,3 +151,34 @@ class Player(AnimatedSprite):
         self.input()
         self.move(dt)
         self.animate(dt)
+
+
+class Enemy(AnimatedSprite):
+    def __init__(self, frames, pos, groups):
+        self.frames, self.frame_index, self.animation_speed = frames, 0, 10
+        super().__init__(frames, pos, groups)
+
+    def update(self, dt):
+        self.move(dt)
+        self.animate(dt)
+        self.constrain()
+
+
+class Bee(Enemy):
+    def __init__(self, frames, pos, groups, speed):
+        super().__init__(frames, pos, groups)
+        self.speed = speed
+        self.amplitude = randint(500, 600)
+        self.frequency = randint(300, 600)
+
+    def move(self, dt):
+        self.rect.x -= self.speed * dt
+        self.rect.y += (
+            sin(pygame.time.get_ticks() / self.frequency) * self.amplitude * dt
+        )
+
+    def constrain(self):
+        if self.rect.right <= 0:
+            self.kill()
+
+

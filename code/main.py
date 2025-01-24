@@ -3,6 +3,7 @@ from sprites import *
 from groups import *
 from support import *
 from timing import Timer
+from random import randint
 
 
 class Game:
@@ -22,6 +23,9 @@ class Game:
         self.load_assets()
         self.setup()
 
+        # timers
+        self.bee_timer = Timer(500, func=self.create_bee, repeat=True, autostart=True)
+
     def load_assets(self):
         # graphics
         self.player_frames = import_folder("images", "player")
@@ -32,6 +36,11 @@ class Game:
 
         # sounds
         self.audio = audio_importer("audio")
+
+    def create_bee(self):
+        x = self.level_width + WINDOW_WIDTH
+        y = randint(0, self.level_height)
+        Bee(self.bee_frames, (x, y), self.all_sprites, randint(300, 500))
 
     def create_bullet(self, pos, direction):
         if direction == 1:
@@ -50,6 +59,8 @@ class Game:
     # sprites
     def setup(self):
         map = load_pygame(join("data", "maps", "world.tmx"))
+        self.level_width = map.width * TILE_SIZE
+        self.level_height = map.height * TILE_SIZE
 
         for x, y, image in map.get_layer_by_name("Main").tiles():
             Sprite(
@@ -81,6 +92,7 @@ class Game:
                     self.running = False
 
             # update
+            self.bee_timer.update()
             self.all_sprites.update(dt)
 
             # draw
