@@ -28,6 +28,10 @@ class Game:
         # timers
         self.bee_timer = Timer(500, func=self.create_bee, repeat=True, autostart=True)
 
+        # score
+        self.score = 0
+        self.font = pygame.font.Font(None, 60)
+
     def load_assets(self):
         # graphics
         self.player_frames = import_folder("images", "player")
@@ -121,11 +125,25 @@ class Game:
                 for sprite in sprite_collision:
                     sprite.destroy()
 
+        # player / gifts
+        sprite_collision = pygame.sprite.spritecollide(
+            self.player, self.gift_sprites, True, pygame.sprite.collide_mask
+        )
+        if sprite_collision:
+            self.score += 1
+
         # player / enemies
         if pygame.sprite.spritecollide(
             self.player, self.enemy_sprites, False, pygame.sprite.collide_mask
         ):
             self.running = False
+
+    def display_score(self):
+        score_surface = self.font.render(
+            str(f"{self.score} / 3"), True, "lightskyblue4"
+        )
+        score_rect = score_surface.get_frect(topright=(WINDOW_WIDTH - 20, 20))
+        self.display_surface.blit(score_surface, score_rect)
 
     def run(self):
         while self.running:
@@ -142,6 +160,7 @@ class Game:
 
             # draw
             self.display_surface.fill(BG_COLOR)
+            self.display_score()
             self.all_sprites.draw(self.player.rect.center)
             pygame.display.update()
 
