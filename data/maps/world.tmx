@@ -68,6 +68,14 @@
   <object id="5" name="Homeless" x="960" y="384" width="384" height="64"/>
   <object id="6" name="Homeless" x="704" y="768" width="448" height="64"/>
   <object id="7" name="Homeless" x="576" y="1152" width="384" height="64"/>
-
+  <object id="8" name="Gift" x="0" y="1021">
+    <point/>
+  </object>
+  <object id="9" name="Gift" x="1985" y="1085">
+    <point/>
+  </object>
+  <object id="10" name="Gift" x="2820" y="255">
+    <point/>
+  </object>
  </objectgroup>
 </map>

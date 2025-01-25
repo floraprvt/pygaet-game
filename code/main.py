@@ -18,6 +18,7 @@ class Game:
         self.all_sprites = AllSprites()
         self.collision_sprites = pygame.sprite.Group()
         self.bullet_sprites = pygame.sprite.Group()
+        self.gift_sprites = pygame.sprite.Group()
         self.enemy_sprites = pygame.sprite.Group()
 
         # load game
@@ -32,6 +33,7 @@ class Game:
         self.player_frames = import_folder("images", "player")
         self.bullet_surf = import_image("images", "gun", "bullet")
         self.fire_surf = import_image("images", "gun", "fire")
+        self.gift_surf = import_image("images", "gift", "gift")
         self.bee_frames = import_folder("images", "enemies", "bee")
         self.homeless_frames = import_folder("images", "enemies", "homeless")
 
@@ -95,6 +97,12 @@ class Game:
                     self.homeless_frames,
                     pygame.FRect(obj.x, obj.y, obj.width, obj.height),
                     (self.all_sprites, self.enemy_sprites),
+                )
+            if obj.name == "Gift":
+                Sprite(
+                    (obj.x, obj.y),
+                    self.gift_surf,
+                    (self.all_sprites, self.gift_sprites),
                 )
 
         self.audio["music"].play(loops=-1)
