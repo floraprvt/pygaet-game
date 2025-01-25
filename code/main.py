@@ -33,7 +33,7 @@ class Game:
         self.bullet_surf = import_image("images", "gun", "bullet")
         self.fire_surf = import_image("images", "gun", "fire")
         self.bee_frames = import_folder("images", "enemies", "bee")
-        self.worm_frames = import_folder("images", "enemies", "worm")
+        self.homeless_frames = import_folder("images", "enemies", "homeless")
 
         # sounds
         self.audio = audio_importer("audio")
@@ -41,7 +41,12 @@ class Game:
     def create_bee(self):
         x = self.level_width + WINDOW_WIDTH
         y = randint(0, self.level_height)
-        Bee(self.bee_frames, (x, y), (self.all_sprites, self.enemy_sprites), randint(300, 500))
+        Bee(
+            self.bee_frames,
+            (x, y),
+            (self.all_sprites, self.enemy_sprites),
+            randint(300, 500),
+        )
 
     def create_bullet(self, pos, direction):
         if direction == 1:
@@ -58,7 +63,7 @@ class Game:
         Fire(pos, self.fire_surf, self.all_sprites, self.player)
 
         self.audio["shoot"].play()
-        self.audio["shoot"].set_volume(0.)
+        self.audio["shoot"].set_volume(0.2)
 
     # sprites
     def setup(self):
@@ -85,9 +90,9 @@ class Game:
                     self.player_frames,
                     self.create_bullet,
                 )
-            if obj.name == "Worm":
-                Worm(
-                    self.worm_frames,
+            if obj.name == "Homeless":
+                Homeless(
+                    self.homeless_frames,
                     pygame.FRect(obj.x, obj.y, obj.width, obj.height),
                     (self.all_sprites, self.enemy_sprites),
                 )
@@ -98,7 +103,9 @@ class Game:
     def collision(self):
         # bullets / enemies
         for bullet in self.bullet_sprites:
-            sprite_collision = pygame.sprite.spritecollide(bullet, self.enemy_sprites, False, pygame.sprite.collide_mask)
+            sprite_collision = pygame.sprite.spritecollide(
+                bullet, self.enemy_sprites, False, pygame.sprite.collide_mask
+            )
             if sprite_collision:
                 self.audio["impact"].play()
                 self.audio["impact"].set_volume(0.3)
@@ -107,7 +114,9 @@ class Game:
                     sprite.destroy()
 
         # player / enemies
-        if pygame.sprite.spritecollide(self.player, self.enemy_sprites, False, pygame.sprite.collide_mask):
+        if pygame.sprite.spritecollide(
+            self.player, self.enemy_sprites, False, pygame.sprite.collide_mask
+        ):
             self.running = False
 
     def run(self):

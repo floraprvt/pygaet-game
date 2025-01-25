@@ -191,13 +191,14 @@ class Bee(Enemy):
             self.kill()
 
 
-class Worm(Enemy):
+class Homeless(Enemy):
     def __init__(self, frames, rect, groups):
         super().__init__(frames, rect.topleft, groups)
         self.rect.bottomleft = rect.bottomleft
         self.main_rect = rect
         self.speed = randint(160, 200)
         self.direction = 1
+        self.animation_speed = 4
 
     def move(self, dt):
         self.rect.x += self.direction * self.speed * dt
